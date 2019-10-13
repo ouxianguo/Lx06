@@ -22,7 +22,7 @@ namespace DAL
         string cns = AppConfigurtaionServices.Configuration.GetConnectionString("cns");
         public Model.Comment GetModel(int id)
         {
-            using (IDbConnection cn=new MySqlConnection(cns))
+            using (IDbConnection cn = new MySqlConnection(cns))
             {
                 string sql = "select * from Comment where commentId=@id";
                 return cn.QueryFirstOrDefault<Model.Comment>(sql, new { id = id });
@@ -30,26 +30,27 @@ namespace DAL
         }
         public IEnumerable<Model.Comment> GetAll()
         {
-            using (IDbConnection cn=new MySqlConnection(cns))
+            using (IDbConnection cn = new MySqlConnection(cns))
             {
                 string sql = "select * from Comment";
                 return cn.Query<Model.Comment>(sql);
             }
+
         }
         public int GetCount()
         {
-            using (IDbConnection cn=new MySqlConnection(cns))
+            using (IDbConnection cn = new MySqlConnection(cns))
             {
                 string sql = "select count(1) from Comment";
                 return cn.ExecuteScalar<int>(sql);
             }
         }
-        public IEnumerable<Model.CommentNo>GetPage(Model.Page page)
+        public IEnumerable<Model.CommentNo> GetPage(Model.Page page)
         {
-            using (IDbConnection cn=new MySqlConnection(cns))
+            using (IDbConnection cn = new MySqlConnection(cns))
             {
                 string sql = "with a as(select row_number() over(order by commentTime desc) as num, Comment.*,workName from Comment join workinfo on Comment.workId=workinfo.workId)";
-                sql += "select * from a where num between (@pageIndex-1)*@pageSize+1 and @pageIndex*@pageSize;";
+                sql += "select * from a where num between (@pageIndex-1)*@pageSize+1 and @pageIndex*@pageSize";
                 return cn.Query<Model.CommentNo>(sql, page);
             }
         }
@@ -66,7 +67,7 @@ namespace DAL
             using (IDbConnection cn = new MySqlConnection(cns))
             {
                 string sql = "with a as(select row_number() over(order by commentTime desc) as num, Comment.* from Comment where Comment.workId=@workId)";
-                sql += "select * from a where num between (@pageIndex-1)*@pageSize+1 and @pageIndex*@pageSize;";
+                sql += "select * from a where num between (@pageIndex-1)*@pageSize+1 and @pageIndex*@pageSize";
                 return cn.Query<Model.CommentNo>(sql, page);
             }
         }
@@ -74,7 +75,7 @@ namespace DAL
         {
             using (IDbConnection cn = new MySqlConnection(cns))
             {
-                string sql = "insert into Comment(commentID,workId,userName,CommentContent,CommentTime) " + "values(@commentID,@workId,@userName,@CommentContent,@CommentTime);";
+                string sql = "insert into Comment(commentID,workId,userName,CommentContent,CommentTime)" + "values(@commentID,@workId,@userName,@CommentContent,@CommentTime);";
                 sql += "SELECT @@IDENTITY";
                 return cn.ExecuteScalar<int>(sql, comment);
             }
@@ -83,8 +84,8 @@ namespace DAL
         {
             using (IDbConnection cn = new MySqlConnection(cns))
             {
-                string sql = "update Comment set CommentContent=@CommentContent,CommentTime=@CommentContent where commentID=@commentID";
-                return cn.Execute(sql, comment);
+                string sql = "update Comment set CommentContent=@CommentContent,CommentTime=@CommentContent where CommentID=@CommentID";
+                return cn.Execute(sql,comment);
             }
         }
         public int Delete(int id)
